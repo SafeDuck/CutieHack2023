@@ -31,6 +31,48 @@ function createPlayer(x, y, color) {
     };
 }
 
+const levels = [
+    [
+        {
+            "x": 10,
+            "y": 450,
+            "width": 200,
+            "height": 15
+        },
+        {
+            "x": 240,
+            "y": 370,
+            "width": 100,
+            "height": 30
+        },
+        {
+            "x": 400,
+            "y": 430,
+            "width": 100,
+            "height": 30
+        },
+        {
+            "x": 550,
+            "y": 400,
+            "width": 75,
+            "height": 15
+        },
+        {
+            "x": 700,
+            "y": 450,
+            "width": 150,
+            "height": 15
+        },
+        {
+            "x": 850,
+            "y": 400,
+            "width": 150,
+            "height": 15
+        },
+    ],
+];
+
+
 function createPlatforms() {
     
     
@@ -39,6 +81,7 @@ function createPlatforms() {
 
 function renderCanvas() {
     ctx.fillStyle = "#F0F8FF";
+    ctx.fillRect(0, 0, 1200, 500);
     ctx.fillRect(0, 0, 1200, 500);
 }
 
@@ -102,11 +145,19 @@ function updatePlayer(player, leftKey, rightKey, upKey) {
     }
 
     // Horizontal movement
-    if (leftKey) {
-        player.x_v = -2.5;
-    }
-    if (rightKey) {
-        player.x_v = 2.5;
+    if (isGamepadConnected) {
+        if (Math.abs(leftKey) > .1) {
+            player.x_v = leftKey * 2.5;
+        } else {
+            player.x_v = 0;
+        }
+    } else {
+        if (leftKey) {
+            player.x_v = -2.5;
+        }
+        if (rightKey) {
+            player.x_v = 2.5;
+        }
     }
 
     // find platform that is below player and closest to player
@@ -130,6 +181,7 @@ function updatePlayer(player, leftKey, rightKey, upKey) {
         closestPlatform.color = "#FF0000"
         if ((player.y + player.y_v) > closestPlatform.y) {
             player.y = closestPlatform.y;
+            player.y_v = 0;
             player.jump = false;
         } else {
             player.y += player.y_v;
@@ -155,6 +207,8 @@ function updatePlayer(player, leftKey, rightKey, upKey) {
         ) {
             player.jump = false;
             player.y = platform.y;
+            player.y_v = 0;
+
         }
     });
 }
@@ -162,6 +216,8 @@ function updatePlayer(player, leftKey, rightKey, upKey) {
 
 var canvas = document.getElementById("canvas");
 var ctx = canvas.getContext("2d");
+canvas.height = 500;
+canvas.width = 1200;
 canvas.height = 500;
 canvas.width = 1200;
 createPlatforms();
