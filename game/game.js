@@ -41,6 +41,15 @@ function createPlayer(x, y, color) {
 
 let level = 0;
 const levels = [
+    [        { x: 50, y: 400, width: 110, height: 15 },
+        { x: 200, y: 400, width: 110, height: 15 },
+        { x: 400, y: 350, width: 110, height: 15 },
+        { x: 600, y: 400, width: 110, height: 15 },
+        { x: 800, y: 400, width: 110, height: 15 },
+        { x: 750, y: 300, width: 200, height: 15 },
+        { x: 550, y: 250, width: 110, height: 15 },
+        { x: 350, y: 250, width: 110, height: 15 },
+        { x: 200, y: 250, width: 110, height: 15 }],
     [
         {
             "x": 10,
