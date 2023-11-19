@@ -1,5 +1,5 @@
-var player1 = createPlayer(200, 230, "#F08080");
-var player2 = createPlayer(100, 200, "#80F080");
+var player1 = createPlayer(200, 0, "#F08080");
+var player2 = createPlayer(150, 0, "#80F080");
 
 let isGamepadConnected = false;
 // Gamepad will have 2 joysticks meaning 4 axes
@@ -35,41 +35,52 @@ function createPlayer(x, y, color) {
     };
 }
 
+const levels = [
+    [
+        {
+            "x": 10,
+            "y": 450,
+            "width": 200,
+            "height": 15
+        },
+        {
+            "x": 240,
+            "y": 370,
+            "width": 100,
+            "height": 30
+        },
+        {
+            "x": 400,
+            "y": 430,
+            "width": 100,
+            "height": 30
+        },
+        {
+            "x": 550,
+            "y": 400,
+            "width": 75,
+            "height": 15
+        },
+        {
+            "x": 700,
+            "y": 450,
+            "width": 150,
+            "height": 15
+        },
+        {
+            "x": 850,
+            "y": 400,
+            "width": 150,
+            "height": 15
+        },
+    ],
+];
+
+
 function createPlatforms() {
-    platforms.push({
-        x: 100,
-        y: 300,
-        width: 110,
-        height: 15,
-    });
-
-    platforms.push({
-        x: 300,
-        y: 400,
-        width: 110,
-        height: 15,
-    });
-
-    platforms.push({
-        x: 500,
-        y: 250,
-        width: 110,
-        height: 15,
-    });
-
-    platforms.push({
-        x: 700,
-        y: 350,
-        width: 110,
-        height: 15,
-    });
-
-    platforms.push({
-        x: 900,
-        y: 300,
-        width: 110,
-        height: 15,
-    });
+    levels[0].forEach(platform => {
+        platforms.push(platform);
+    })
 }
 
 
@@ -133,7 +144,7 @@ function gameLoop() {
         updatePlayer(player1, joystick_values[0], 0, joystick_values[1] < -.5);
         updatePlayer(player2, joystick_values[2], 0, joystick_values[3] < -.5);
     } else {
-        updatePlayer(player1, keys.left, keys.up);
+        updatePlayer(player1, keys.left, keys.right, keys.up);
         updatePlayer(player2, keys.a, keys.d, keys.w);
     }
     renderCanvas();
