@@ -88,8 +88,8 @@ function renderPlayer(player) {
 }
 
 function renderPlatforms() {
-    ctx.fillStyle = "#45597E";
     platforms.forEach(platform => {
+        ctx.fillStyle = platform.color || "#45597E";
         ctx.fillRect(platform.x, platform.y, platform.width, platform.height);
     });
 }
@@ -152,7 +152,34 @@ function updatePlayer(player, leftKey, rightKey, upKey) {
         player.x_v = 2.5;
     }
 
-    player.y += player.y_v;
+    // find platform that is below player and closest to player
+    let closestPlatform = null;
+    platforms.forEach(platform => {
+        if (
+            player.x > platform.x &&
+            player.x < platform.x + platform.width + player.width &&
+            player.y <= platform.y
+        ) {
+            if (closestPlatform === null) {
+                closestPlatform = platform;
+            } else if (platform.y < closestPlatform.y) {
+                closestPlatform = platform;
+            }
+        }
+    });
+
+    // if player would fall through platform, move player to platform
+    if (closestPlatform !== null) {
+        closestPlatform.color = "#FF0000"
+        if ((player.y + player.y_v) > closestPlatform.y) {
+            player.y = closestPlatform.y;
+            player.jump = false;
+        } else {
+            player.y += player.y_v;
+        }
+    } else {
+        player.y += player.y_v;
+    }
     player.x += player.x_v;
 
     // Collision with platforms
