@@ -70,7 +70,7 @@ function createPlatforms() {
 
 function renderCanvas() {
     ctx.fillStyle = "#F0F8FF";
-    ctx.fillRect(0, 0, 1000, 1000);
+    ctx.fillRect(0, 0, 1200, 500);
 }
 
 function renderPlayer(player) {
@@ -185,8 +185,8 @@ function updatePlayer(player, leftKey, rightKey, upKey) {
 
 var canvas = document.getElementById("canvas");
 var ctx = canvas.getContext("2d");
-canvas.height = 1000;
-canvas.width = 1000;
+canvas.height = 500;
+canvas.width = 1200;
 createPlatforms();
 
 document.addEventListener("keydown", keyDown);
