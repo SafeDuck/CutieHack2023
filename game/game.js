@@ -33,37 +33,45 @@ function createPlayer(x, y, color) {
 
 function createPlatforms() {
     platforms.push({
-        x: 100,
-        y: 300,
-        width: 110,
+        x: 10,
+        y: 450,
+        width: 200,
         height: 15,
     });
-
     platforms.push({
-        x: 300,
+        x: 240,
+        y: 370,
+        width: 100,
+        height: 30,
+    });
+    platforms.push({
+        x: 400,
+        y: 430,
+        width: 100,
+        height: 30,
+    });
+    platforms.push({
+        x: 550,
         y: 400,
-        width: 110,
+        width: 75,
         height: 15,
     });
-
-    platforms.push({
-        x: 500,
-        y: 250,
-        width: 110,
-        height: 15,
-    });
-
     platforms.push({
         x: 700,
-        y: 350,
-        width: 110,
+        y: 450,
+        width: 150,
         height: 15,
     });
-
     platforms.push({
-        x: 900,
-        y: 300,
-        width: 110,
+        x: 850,
+        y: 400,
+        width: 150,
+        height: 15,
+    });
+    platforms.push({
+        x: 850,
+        y: 400,
+        width: 150,
         height: 15,
     });
 }
@@ -71,7 +79,7 @@ function createPlatforms() {
 
 function renderCanvas() {
     ctx.fillStyle = "#F0F8FF";
-    ctx.fillRect(0, 0, 1000, 1000);
+    ctx.fillRect(0, 0, 1200, 500);
 }
 
 function renderPlayer(player) {
@@ -106,42 +114,12 @@ function keyUp(e) {
     if (e.key === "s") keys.s = false;
 }
 
-function loop(timestamp) {
-    // ...
-
-    // Calculate the next position based on velocity and delta time
-    var nextX = player.x + player.x_v * deltaTime;
-    var nextY = player.y + player.y_v * deltaTime;
-
-    // Check for collisions with each platform
-    platforms.forEach((platform) => {
-        if (
-            nextX < platform.x + platform.width &&
-            nextX + player.width > platform.x &&
-            nextY < platform.y + platform.height &&
-            nextY + player.height > platform.y
-        ) {
-            // Adjust the player's position to be on top of the platform
-            player.y = platform.y - player.height;
-            player.y_v = 0; // Set vertical velocity to zero (landing)
-            player.jump = false; // Player is on the ground
-        }
-    });
-
-    // ...
-
-    // Updating the y and x coordinates of the player with delta time
-    player.y += player.y_v * deltaTime;
-    player.x += player.x_v * deltaTime;
-
-    // ...
-}
 
 
 function gameLoop() {
     updatePlayer(player1, keys.left, keys.right, keys.up);
     updatePlayer(player2, keys.a, keys.d, keys.w);
-    loop();
+    
     renderCanvas();
     renderPlayer(player1);
     renderPlayer(player2);
@@ -151,11 +129,16 @@ function gameLoop() {
 function updatePlayer(player, leftKey, rightKey, upKey) {
     if (player.jump === false) {
         player.x_v *= friction;
-    } else{
+    } else {
         player.y_v += gravity;
+
+        // Cap the falling speed to a maximum value 
+        if (player.y_v > 6) {
+            player.y_v = 6;
+        }
     }
 
-    // Allow jumping only if player is on the ground
+    // Allow jumping only if the player is on the ground
     if (upKey && !player.jump) {
         player.y_v = -jumpStrength;
         player.jump = true;
@@ -186,10 +169,11 @@ function updatePlayer(player, leftKey, rightKey, upKey) {
     });
 }
 
+
 var canvas = document.getElementById("canvas");
 var ctx = canvas.getContext("2d");
-canvas.height = 1000;
-canvas.width = 1000;
+canvas.height = 500;
+canvas.width = 1200;
 createPlatforms();
 
 document.addEventListener("keydown", keyDown);
