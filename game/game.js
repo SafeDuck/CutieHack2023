@@ -117,10 +117,11 @@ function gameLoop() {
 function updatePlayer(player, leftKey, rightKey, upKey) {
     if (player.jump === false) {
         player.x_v *= friction;
-    } else {
-        player.y_v += gravity;
     }
-
+    player.y_v += gravity;
+    if (player.y_v > 10) {
+        player.y_v = 10;
+    }
     // Allow jumping only if player is on the ground
     if (upKey && !player.jump) {
         player.y_v = -jumpStrength;
@@ -156,6 +157,7 @@ function updatePlayer(player, leftKey, rightKey, upKey) {
         closestPlatform.color = "#FF0000"
         if ((player.y + player.y_v) > closestPlatform.y) {
             player.y = closestPlatform.y;
+            player.y_v = 0;
             player.jump = false;
         } else {
             player.y += player.y_v;
@@ -175,6 +177,8 @@ function updatePlayer(player, leftKey, rightKey, upKey) {
         ) {
             player.jump = false;
             player.y = platform.y;
+            player.y_v = 0;
+
         }
     });
 }
