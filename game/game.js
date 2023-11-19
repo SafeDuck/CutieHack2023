@@ -1,5 +1,5 @@
-var player1 = createPlayer(200, 230, "#F08080");
-var player2 = createPlayer(100, 200, "#80F080");
+var player1 = createPlayer(200, 30, "#F08080");
+var player2 = createPlayer(120, 200, "#80F080");
 
 var keys = {
     left: false,
@@ -11,11 +11,12 @@ var keys = {
     s: false,
 };
 
-var gravity = 0.6;
+var gravity = 0.4;
 var friction = 0.7;
 var jumpStrength = 10;
 var numPlatforms = 10;
 var platforms = [];
+
 
 function createPlayer(x, y, color) {
     return {
@@ -105,9 +106,42 @@ function keyUp(e) {
     if (e.key === "s") keys.s = false;
 }
 
+function loop(timestamp) {
+    // ...
+
+    // Calculate the next position based on velocity and delta time
+    var nextX = player.x + player.x_v * deltaTime;
+    var nextY = player.y + player.y_v * deltaTime;
+
+    // Check for collisions with each platform
+    platforms.forEach((platform) => {
+        if (
+            nextX < platform.x + platform.width &&
+            nextX + player.width > platform.x &&
+            nextY < platform.y + platform.height &&
+            nextY + player.height > platform.y
+        ) {
+            // Adjust the player's position to be on top of the platform
+            player.y = platform.y - player.height;
+            player.y_v = 0; // Set vertical velocity to zero (landing)
+            player.jump = false; // Player is on the ground
+        }
+    });
+
+    // ...
+
+    // Updating the y and x coordinates of the player with delta time
+    player.y += player.y_v * deltaTime;
+    player.x += player.x_v * deltaTime;
+
+    // ...
+}
+
+
 function gameLoop() {
     updatePlayer(player1, keys.left, keys.right, keys.up);
     updatePlayer(player2, keys.a, keys.d, keys.w);
+    loop();
     renderCanvas();
     renderPlayer(player1);
     renderPlayer(player2);
@@ -117,7 +151,7 @@ function gameLoop() {
 function updatePlayer(player, leftKey, rightKey, upKey) {
     if (player.jump === false) {
         player.x_v *= friction;
-    } else {
+    } else{
         player.y_v += gravity;
     }
 
