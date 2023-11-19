@@ -1,5 +1,8 @@
-var player1 = createPlayer(200, 0, "#F08080");
-var player2 = createPlayer(150, 0, "#80F080");
+let player1_start_x = 125;
+let player2_start_x = 75;
+
+var player1 = createPlayer(player1_start_x, 0, "#F08080");
+var player2 = createPlayer(player2_start_x, 0, "#80F080");
 
 let isGamepadConnected = false;
 // Gamepad will have 2 joysticks meaning 4 axes
@@ -151,6 +154,15 @@ function gameLoop() {
     renderPlayer(player1);
     renderPlayer(player2);
     renderPlatforms();
+
+    if (player1.y > 500) {
+        player1.x = player1_start_x;
+        player1.y = 0;
+    }
+    if (player2.y > 500) {
+        player2.x = player2_start_x;
+        player2.y = 0;
+    }
 }
 
 function updatePlayer(player, leftKey, rightKey, upKey) {
