@@ -120,15 +120,20 @@ function renderPlatforms() {
         }
         createPlatforms();
         player1.x = player1_start_x;
+        player1.x_v = 0;
         player1.y = 0;
         player2.x = player2_start_x;
+        player2.x_v = 0;
         player2.y = 0;
         player1.done = false;
         player2.done = false;
     }
 
-    platforms.forEach(platform => {
-        ctx.fillStyle = platform.color || "#45597E";
+    platforms.forEach((platform, index) => {
+        if (index == 0)
+            ctx.fillStyle = "#ffc800"
+        else
+            ctx.fillStyle = platform.color || "#45597E";
         ctx.fillRect(platform.x, platform.y, platform.width, platform.height);
     });
 }
@@ -188,6 +193,7 @@ function gameLoop() {
         if (player1.x < 1000) {
             player1.x = player1_start_x;
             player1.y = 0;
+            player1.x_v = 0;
         } else {
             player1.done = true;
         }
@@ -196,6 +202,7 @@ function gameLoop() {
         if (player2.x < 1000) {
             player2.x = player2_start_x;
             player2.y = 0;
+            player2.x_v = 0;
         } else {
             player2.done = true;
         }
@@ -250,8 +257,15 @@ function updatePlayer(player, leftKey, rightKey, upKey) {
 
     // if player would fall through platform, move player to platform
     if (closestPlatform !== null) {
-        closestPlatform.color = "#FF0000"
         if ((player.y + player.y_v) > closestPlatform.y) {
+            if (closestPlatform.color === "#45597E") {
+                // change platform color based on player color
+                if (player.color === "#F08080") {
+                    closestPlatform.color = "#F08080";
+                } else {
+                    closestPlatform.color = "#80F080";
+                }
+            }
             player.y = closestPlatform.y;
             player.y_v = 0;
             player.jump = false;
