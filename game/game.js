@@ -44,10 +44,10 @@ const levels = [
     [
         { x: 50, y: 400, width: 110, height: 15 },
         { x: 200, y: 400, width: 110, height: 15 },
-        { x: 400, y: 350, width: 110, height: 15 },
+        { x: 390, y: 350, width: 110, height: 15 },
         { x: 600, y: 400, width: 110, height: 15 },
         { x: 800, y: 400, width: 110, height: 15 },
-        { x: 750, y: 300, width: 200, height: 15 },
+        { x: 770, y: 300, width: 200, height: 15 },
         { x: 550, y: 250, width: 110, height: 15 },
         { x: 350, y: 250, width: 110, height: 15 },
         { x: 200, y: 250, width: 110, height: 15 }
@@ -98,9 +98,13 @@ function renderPlatforms() {
         }
         createPlatforms();
         player1.x = player1_start_x;
+        player.x_v = 0;
         player1.y = 0;
+        player1.y_v = 0;
         player2.x = player2_start_x;
+        player2.x_v = 0
         player2.y = 0;
+        player2.y_v = 0
         player1.done = false;
         player2.done = false;
     }
