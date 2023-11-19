@@ -36,15 +36,6 @@ function createPlatforms() {
         y: 300,
         width: 110,
         height: 15,
-        color: "#0000FF",
-    });
-
-    platforms.push({
-        x: 100,
-        y: 400,
-        width: 110,
-        height: 15,
-        color: "#0000FF",
     });
 
     platforms.push({
@@ -52,7 +43,6 @@ function createPlatforms() {
         y: 400,
         width: 110,
         height: 15,
-        color: "#0000FF",
     });
 
     platforms.push({
@@ -60,7 +50,6 @@ function createPlatforms() {
         y: 250,
         width: 110,
         height: 15,
-        color: "#0000FF",
     });
 
     platforms.push({
@@ -68,7 +57,6 @@ function createPlatforms() {
         y: 350,
         width: 110,
         height: 15,
-        color: "#0000FF",
     });
 
     platforms.push({
@@ -76,9 +64,9 @@ function createPlatforms() {
         y: 300,
         width: 110,
         height: 15,
-        color: "#0000FF",
     });
 }
+
 
 function renderCanvas() {
     ctx.fillStyle = "#F0F8FF";
@@ -92,7 +80,7 @@ function renderPlayer(player) {
 
 function renderPlatforms() {
     platforms.forEach(platform => {
-        ctx.fillStyle = platform.color;
+        ctx.fillStyle = platform.color || "#45597E";
         ctx.fillRect(platform.x, platform.y, platform.width, platform.height);
     });
 }
