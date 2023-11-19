@@ -1,4 +1,4 @@
-var player1 = createPlayer(200, 200, "#F08080");
+var player1 = createPlayer(200, 230, "#F08080");
 var player2 = createPlayer(100, 200, "#80F080");
 
 var keys = {
@@ -14,7 +14,7 @@ var keys = {
 var gravity = 0.6;
 var friction = 0.7;
 var jumpStrength = 10;
-var numPlatforms = 2;
+var numPlatforms = 10;
 var platforms = [];
 
 function createPlayer(x, y, color) {
@@ -22,7 +22,7 @@ function createPlayer(x, y, color) {
         x: x,
         y: y,
         x_v: 0,
-        y_v: 0,
+        y_v: 4.7,
         jump: false,
         height: 20,
         width: 20,
@@ -43,7 +43,7 @@ function createPlatforms() {
 
 function renderCanvas() {
     ctx.fillStyle = "#F0F8FF";
-    ctx.fillRect(0, 0, 270, 270);
+    ctx.fillRect(0, 0, 1000, 1000);
 }
 
 function renderPlayer(player) {
@@ -115,7 +115,7 @@ function updatePlayer(player, leftKey, rightKey, upKey) {
     platforms.forEach(platform => {
         if (
             player.x > platform.x &&
-            player.x < platform.x + platform.width &&
+            player.x < platform.x + platform.width + player.width &&
             player.y > platform.y &&
             player.y < platform.y + platform.height
         ) {
@@ -127,8 +127,8 @@ function updatePlayer(player, leftKey, rightKey, upKey) {
 
 var canvas = document.getElementById("canvas");
 var ctx = canvas.getContext("2d");
-canvas.height = 270;
-canvas.width = 270;
+canvas.height = 1000;
+canvas.width = 1000;
 createPlatforms();
 
 document.addEventListener("keydown", keyDown);
