@@ -3,8 +3,13 @@ var player2 = createPlayer(100, 200, "#80F080");
 
 var keys = {
     left: false,
+    left: false,
     right: false,
     up: false,
+    a: false,
+    d: false,
+    w: false,
+    s: false,
     a: false,
     d: false,
     w: false,
@@ -32,10 +37,12 @@ function createPlayer(x, y, color) {
 
 function createPlatforms() {
     for (let i = 0; i < numPlatforms; i++) {
+    for (let i = 0; i < numPlatforms; i++) {
         platforms.push({
             x: 100 * i,
             y: 200 + 30 * i,
             width: 110,
+            height: 15,
             height: 15,
         });
     }
@@ -56,9 +63,19 @@ function renderPlatforms() {
     platforms.forEach(platform => {
         ctx.fillRect(platform.x, platform.y, platform.width, platform.height);
     });
+    platforms.forEach(platform => {
+        ctx.fillRect(platform.x, platform.y, platform.width, platform.height);
+    });
 }
 
 function keyDown(e) {
+    if (e.key === "ArrowLeft") keys.left = true;
+    if (e.key === "ArrowRight") keys.right = true;
+    if (e.key === "ArrowUp") keys.up = true;
+    if (e.key === "a") keys.a = true;
+    if (e.key === "d") keys.d = true;
+    if (e.key === "w") keys.w = true;
+    if (e.key === "s") keys.s = true;
     if (e.key === "ArrowLeft") keys.left = true;
     if (e.key === "ArrowRight") keys.right = true;
     if (e.key === "ArrowUp") keys.up = true;
@@ -76,9 +93,26 @@ function keyUp(e) {
     if (e.key === "d") keys.d = false;
     if (e.key === "w") keys.w = false;
     if (e.key === "s") keys.s = false;
+    if (e.key === "ArrowLeft") keys.left = false;
+    if (e.key === "ArrowRight") keys.right = false;
+    if (e.key === "ArrowUp") keys.up = false;
+    if (e.key === "a") keys.a = false;
+    if (e.key === "d") keys.d = false;
+    if (e.key === "w") keys.w = false;
+    if (e.key === "s") keys.s = false;
 }
 
 function gameLoop() {
+    updatePlayer(player1, keys.left, keys.right, keys.up);
+    updatePlayer(player2, keys.a, keys.d, keys.w);
+    renderCanvas();
+    renderPlayer(player1);
+    renderPlayer(player2);
+    renderPlatforms();
+}
+
+function updatePlayer(player, leftKey, rightKey, upKey) {
+    if (player.jump === false) {
     updatePlayer(player1, keys.left, keys.right, keys.up);
     updatePlayer(player2, keys.a, keys.d, keys.w);
     renderCanvas();
@@ -100,10 +134,19 @@ function updatePlayer(player, leftKey, rightKey, upKey) {
         player.jump = true;
     }
 
+    // Allow jumping only if player is on the ground
+    if (upKey && !player.jump) {
+        player.y_v = -jumpStrength;
+        player.jump = true;
+    }
+
+    // Horizontal movement
+    if (leftKey) {
     // Horizontal movement
     if (leftKey) {
         player.x_v = -2.5;
     }
+    if (rightKey) {
     if (rightKey) {
         player.x_v = 2.5;
     }
