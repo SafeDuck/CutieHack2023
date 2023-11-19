@@ -207,6 +207,9 @@ function gameLoop() {
             player2.done = true;
         }
     }
+
+    ctx.fillStyle = "#5cf7ff";
+    ctx.fillRect(1000, 490, 200, 10);
 }
 
 function updatePlayer(player, leftKey, rightKey, upKey) {
