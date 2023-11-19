@@ -7,7 +7,7 @@ ser = serial.Serial('/dev/ttyACM0', 9600)
 # Set up the virtual joystick
 ui = UInput({
     e.EV_KEY:
-        [e.BTN_A, e.BTN_B],
+        [e.BTN_THUMB, e.BTN_THUMB2],
     e.EV_ABS:
         [
             # joystick 1
@@ -43,9 +43,9 @@ while True:
             ui.write(e.EV_ABS, e.ABS_RX, mapped_x2)
             ui.write(e.EV_ABS, e.ABS_RY, mapped_y2)
 
-            ui.write(e.EV_KEY, e.BTN_A, a)
-            ui.write(e.EV_KEY, e.BTN_B, b)
-            
+            ui.write(e.EV_KEY, e.BTN_THUMB, a)
+            ui.write(e.EV_KEY, e.BTN_THUMB2, b)
+
             ui.syn()
 
     except ValueError:
