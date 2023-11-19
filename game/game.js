@@ -31,14 +31,40 @@ function createPlayer(x, y, color) {
 }
 
 function createPlatforms() {
-    for (let i = 0; i < numPlatforms; i++) {
-        platforms.push({
-            x: 100 * i,
-            y: 200 + 30 * i,
-            width: 110,
-            height: 15,
-        });
-    }
+    platforms.push({
+        x: 100,
+        y: 300,
+        width: 110,
+        height: 15,
+    });
+
+    platforms.push({
+        x: 300,
+        y: 400,
+        width: 110,
+        height: 15,
+    });
+
+    platforms.push({
+        x: 500,
+        y: 250,
+        width: 110,
+        height: 15,
+    });
+
+    platforms.push({
+        x: 700,
+        y: 350,
+        width: 110,
+        height: 15,
+    });
+
+    platforms.push({
+        x: 900,
+        y: 300,
+        width: 110,
+        height: 15,
+    });
 }
 
 function renderCanvas() {
