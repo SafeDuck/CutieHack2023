@@ -1,5 +1,5 @@
-var player1 = createPlayer(200, 30, "#F08080");
-var player2 = createPlayer(120, 200, "#80F080");
+var player1 = createPlayer(100, 375, "#F08080");
+var player2 = createPlayer(50, 375, "#80F080");
 
 var keys = {
     left: false,
@@ -11,7 +11,7 @@ var keys = {
     s: false,
 };
 
-var gravity = 0.4;
+var gravity = 0.6;
 var friction = 0.7;
 var jumpStrength = 10;
 var numPlatforms = 10;
@@ -32,48 +32,8 @@ function createPlayer(x, y, color) {
 }
 
 function createPlatforms() {
-    platforms.push({
-        x: 10,
-        y: 450,
-        width: 200,
-        height: 15,
-    });
-    platforms.push({
-        x: 240,
-        y: 370,
-        width: 100,
-        height: 30,
-    });
-    platforms.push({
-        x: 400,
-        y: 430,
-        width: 100,
-        height: 30,
-    });
-    platforms.push({
-        x: 550,
-        y: 400,
-        width: 75,
-        height: 15,
-    });
-    platforms.push({
-        x: 700,
-        y: 450,
-        width: 150,
-        height: 15,
-    });
-    platforms.push({
-        x: 850,
-        y: 400,
-        width: 150,
-        height: 15,
-    });
-    platforms.push({
-        x: 850,
-        y: 400,
-        width: 150,
-        height: 15,
-    });
+    
+    
 }
 
 
@@ -132,10 +92,7 @@ function updatePlayer(player, leftKey, rightKey, upKey) {
     } else {
         player.y_v += gravity;
 
-        // Cap the falling speed to a maximum value 
-        if (player.y_v > 6) {
-            player.y_v = 6;
-        }
+        
     }
 
     // Allow jumping only if the player is on the ground
@@ -181,6 +138,12 @@ function updatePlayer(player, leftKey, rightKey, upKey) {
         player.y += player.y_v;
     }
     player.x += player.x_v;
+
+    //if player would fall below canvas, respawn
+    if(player.y > canvas.height){
+        player.x = 100;
+        player.y = 375;
+    }
 
     // Collision with platforms
     platforms.forEach(platform => {
