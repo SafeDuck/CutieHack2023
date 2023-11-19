@@ -1,15 +1,15 @@
 let player1_start_x = 125;
 let player2_start_x = 75;
 
-var player1 = createPlayer(player1_start_x, 0, "#F08080");
-var player2 = createPlayer(player2_start_x, 0, "#80F080");
+let player1 = createPlayer(player1_start_x, 0, "#F08080");
+let player2 = createPlayer(player2_start_x, 0, "#80F080");
 
 let isGamepadConnected = false;
 // Gamepad will have 2 joysticks meaning 4 axes
 // x, y, xr, yt
 let joystick_values = [0, 0, 0, 0];
 
-var keys = {
+let keys = {
     left: false,
     right: false,
     up: false,
@@ -19,11 +19,11 @@ var keys = {
     s: false,
 };
 
-var gravity = 0.6;
-var friction = 0.7;
-var jumpStrength = 10;
-var numPlatforms = 10;
-var platforms = [];
+let gravity = 0.6;
+let friction = 0.7;
+let jumpStrength = 10;
+let numPlatforms = 10;
+let platforms = [];
 
 function createPlayer(x, y, color) {
     return {
@@ -257,8 +257,8 @@ function updatePlayer(player, leftKey, rightKey, upKey) {
     });
 }
 
-var canvas = document.getElementById("canvas");
-var ctx = canvas.getContext("2d");
+let canvas = document.getElementById("canvas");
+let ctx = canvas.getContext("2d");
 canvas.height = 500;
 canvas.width = 1200;
 createPlatforms();
