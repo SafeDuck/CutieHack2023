@@ -1,6 +1,11 @@
 var player1 = createPlayer(200, 200, "#F08080");
 var player2 = createPlayer(100, 200, "#80F080");
 
+let isGamepadConnected = false;
+// Gamepad will have 2 joysticks meaning 4 axes
+// x, y, xr, yt
+let joystick_values = [0, 0, 0, 0];
+
 var keys = {
     left: false,
     right: false,
@@ -78,9 +83,32 @@ function keyUp(e) {
     if (e.key === "s") keys.s = false;
 }
 
+window.addEventListener("gamepadconnected", (e) => {
+    isGamepadConnected = true;
+
+    // assign information to gamepad_values on interval
+    setInterval(() => {
+        // get gamepad
+        const gamepad = navigator.getGamepads()[0];
+
+        // get axes values
+        joystick_values = [
+            gamepad.axes[0],
+            gamepad.axes[1],
+            gamepad.axes[2],
+            gamepad.axes[3],
+        ];
+    }, 100);
+});
+
 function gameLoop() {
-    updatePlayer(player1, keys.left, keys.right, keys.up);
-    updatePlayer(player2, keys.a, keys.d, keys.w);
+    if (isGamepadConnected) {
+        updatePlayer(player1, joystick_values[0], 0, joystick_values[1] < -.5);
+        updatePlayer(player2, joystick_values[2], 0, joystick_values[3] < -.5);
+    } else {
+        updatePlayer(player1, keys.left, keys.up);
+        updatePlayer(player2, keys.a, keys.d, keys.w);
+    }
     renderCanvas();
     renderPlayer(player1);
     renderPlayer(player2);
@@ -101,13 +129,20 @@ function updatePlayer(player, leftKey, rightKey, upKey) {
     }
 
     // Horizontal movement
-    if (leftKey) {
-        player.x_v = -2.5;
+    if (isGamepadConnected) {
+        if (Math.abs(leftKey) > .1) {
+            player.x_v = leftKey * 2.5;
+        } else {
+            player.x_v = 0;
+        }
+    } else {
+        if (leftKey) {
+            player.x_v = -2.5;
+        }
+        if (rightKey) {
+            player.x_v = 2.5;
+        }
     }
-    if (rightKey) {
-        player.x_v = 2.5;
-    }
-
     player.y += player.y_v;
     player.x += player.x_v;
 
