@@ -1,4 +1,4 @@
-var player1 = createPlayer(200, 200, "#F08080");
+var player1 = createPlayer(200, 230, "#F08080");
 var player2 = createPlayer(100, 200, "#80F080");
 
 let isGamepadConnected = false;
@@ -19,7 +19,7 @@ var keys = {
 var gravity = 0.6;
 var friction = 0.7;
 var jumpStrength = 10;
-var numPlatforms = 2;
+var numPlatforms = 10;
 var platforms = [];
 
 function createPlayer(x, y, color) {
@@ -27,7 +27,7 @@ function createPlayer(x, y, color) {
         x: x,
         y: y,
         x_v: 0,
-        y_v: 0,
+        y_v: 4.7,
         jump: false,
         height: 20,
         width: 20,
@@ -36,19 +36,46 @@ function createPlayer(x, y, color) {
 }
 
 function createPlatforms() {
-    for (let i = 0; i < numPlatforms; i++) {
-        platforms.push({
-            x: 100 * i,
-            y: 200 + 30 * i,
-            width: 110,
-            height: 15,
-        });
-    }
+    platforms.push({
+        x: 100,
+        y: 300,
+        width: 110,
+        height: 15,
+    });
+
+    platforms.push({
+        x: 300,
+        y: 400,
+        width: 110,
+        height: 15,
+    });
+
+    platforms.push({
+        x: 500,
+        y: 250,
+        width: 110,
+        height: 15,
+    });
+
+    platforms.push({
+        x: 700,
+        y: 350,
+        width: 110,
+        height: 15,
+    });
+
+    platforms.push({
+        x: 900,
+        y: 300,
+        width: 110,
+        height: 15,
+    });
 }
+
 
 function renderCanvas() {
     ctx.fillStyle = "#F0F8FF";
-    ctx.fillRect(0, 0, 270, 270);
+    ctx.fillRect(0, 0, 1200, 500);
 }
 
 function renderPlayer(player) {
@@ -57,8 +84,8 @@ function renderPlayer(player) {
 }
 
 function renderPlatforms() {
-    ctx.fillStyle = "#45597E";
     platforms.forEach(platform => {
+        ctx.fillStyle = platform.color || "#45597E";
         ctx.fillRect(platform.x, platform.y, platform.width, platform.height);
     });
 }
@@ -118,10 +145,11 @@ function gameLoop() {
 function updatePlayer(player, leftKey, rightKey, upKey) {
     if (player.jump === false) {
         player.x_v *= friction;
-    } else {
-        player.y_v += gravity;
     }
-
+    player.y_v += gravity;
+    if (player.y_v > 10) {
+        player.y_v = 10;
+    }
     // Allow jumping only if player is on the ground
     if (upKey && !player.jump) {
         player.y_v = -jumpStrength;
@@ -143,27 +171,58 @@ function updatePlayer(player, leftKey, rightKey, upKey) {
             player.x_v = 2.5;
         }
     }
-    player.y += player.y_v;
+
+    // find platform that is below player and closest to player
+    let closestPlatform = null;
+    platforms.forEach(platform => {
+        if (
+            player.x > platform.x &&
+            player.x < platform.x + platform.width + player.width &&
+            player.y <= platform.y
+        ) {
+            if (closestPlatform === null) {
+                closestPlatform = platform;
+            } else if (platform.y < closestPlatform.y) {
+                closestPlatform = platform;
+            }
+        }
+    });
+
+    // if player would fall through platform, move player to platform
+    if (closestPlatform !== null) {
+        closestPlatform.color = "#FF0000"
+        if ((player.y + player.y_v) > closestPlatform.y) {
+            player.y = closestPlatform.y;
+            player.y_v = 0;
+            player.jump = false;
+        } else {
+            player.y += player.y_v;
+        }
+    } else {
+        player.y += player.y_v;
+    }
     player.x += player.x_v;
 
     // Collision with platforms
     platforms.forEach(platform => {
         if (
             player.x > platform.x &&
-            player.x < platform.x + platform.width &&
+            player.x < platform.x + platform.width + player.width &&
             player.y > platform.y &&
             player.y < platform.y + platform.height
         ) {
             player.jump = false;
             player.y = platform.y;
+            player.y_v = 0;
+
         }
     });
 }
 
 var canvas = document.getElementById("canvas");
 var ctx = canvas.getContext("2d");
-canvas.height = 270;
-canvas.width = 270;
+canvas.height = 500;
+canvas.width = 1200;
 createPlatforms();
 
 document.addEventListener("keydown", keyDown);
