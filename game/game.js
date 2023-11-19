@@ -1,5 +1,13 @@
-var player1 = createPlayer(100, 375, "#F08080");
-var player2 = createPlayer(50, 375, "#80F080");
+let player1_start_x = 125;
+let player2_start_x = 75;
+
+var player1 = createPlayer(player1_start_x, 0, "#F08080");
+var player2 = createPlayer(player2_start_x, 0, "#80F080");
+
+let isGamepadConnected = false;
+// Gamepad will have 2 joysticks meaning 4 axes
+// x, y, xr, yt
+let joystick_values = [0, 0, 0, 0];
 
 var keys = {
     left: false,
@@ -17,7 +25,6 @@ var jumpStrength = 10;
 var numPlatforms = 10;
 var platforms = [];
 
-
 function createPlayer(x, y, color) {
     return {
         x: x,
@@ -27,10 +34,12 @@ function createPlayer(x, y, color) {
         jump: false,
         height: 20,
         width: 20,
+        done: false,
         color: color,
     };
 }
 
+let level = 0;
 const levels = [
     [
         {
@@ -70,18 +79,143 @@ const levels = [
             "height": 15
         },
     ],
+    [
+        {
+            x: 10,
+            y: 450,
+            width: 200,
+            height: 15,
+        },
+        {
+            x: 240,
+            y: 370,
+            width: 100,
+            height: 30,
+        },
+        {
+            x: 400,
+            y: 430,
+            width: 100,
+            height: 30,
+        },
+        {
+            x: 550,
+            y: 400,
+            width: 75,
+            height: 15,
+        },
+        {
+            x: 700,
+            y: 450,
+            width: 150,
+            height: 15,
+        },
+        {
+            x: 850,
+            y: 425,
+            width: 150,
+            height: 15,
+        },
+        {
+            x: 1100,
+            y: 400,
+            width: 50,
+            height: 15,
+        },
+        {
+            x: 1000,
+            y: 350,
+            width: 50,
+            height: 15,
+        },
+        {
+            x: 860,
+            y: 300,
+            width: 50,
+            height: 15,
+        },
+        {
+            x: 700,
+            y: 300,
+            width: 100,
+            height: 15,
+        },
+        {
+            x: 600,
+            y: 270,
+            width: 100,
+            height: 15,
+        },
+        {
+            x: 600,
+            y: 270,
+            width: 100,
+            height: 15,
+        },
+    ],
+    [
+        {
+            "x": 10,
+            "y": 375,
+            "width": 100,
+            "height": 15
+        },
+        {
+            "x": 230,
+            "y": 450,
+            "width": 110,
+            "height": 30
+        },
+        {
+            "x": 390,
+            "y": 365,
+            "width": 30,
+            "height": 10
+        },
+        {
+            "x": 510,
+            "y": 365,
+            "width": 30,
+            "height": 10
+        },
+        {
+            "x": 600,
+            "y": 300,
+            "width": 150,
+            "height": 15
+        },
+        {
+            "x": 810,
+            "y": 250,
+            "width": 70,
+            "height": 15
+        },
+        {
+            "x": 975,
+            "y": 450,
+            "width": 30,
+            "height": 15
+        },
+        {
+            "x": 1090,
+            "y": 400,
+            "width": 40,
+            "height": 15
+        },
+    ],
 ];
 
 
 function createPlatforms() {
-    
-    
+    platforms = [];
+    levels[level].forEach(platform => {
+        platforms.push(platform);
+    })
 }
 
 
 function renderCanvas() {
     ctx.fillStyle = "#F0F8FF";
-    ctx.fillRect(0, 0, 1200, 500);
     ctx.fillRect(0, 0, 1200, 500);
 }
 
@@ -91,6 +225,20 @@ function renderPlayer(player) {
 }
 
 function renderPlatforms() {
+    if (player1.done && player2.done) {
+        level++;
+        if (level >= levels.length) {
+            level = 0;
+        }
+        createPlatforms();
+        player1.x = player1_start_x;
+        player1.y = 0;
+        player2.x = player2_start_x;
+        player2.y = 0;
+        player1.done = false;
+        player2.done = false;
+    }
+    
     platforms.forEach(platform => {
         ctx.fillStyle = platform.color || "#45597E";
         ctx.fillRect(platform.x, platform.y, platform.width, platform.height);
@@ -117,28 +265,64 @@ function keyUp(e) {
     if (e.key === "s") keys.s = false;
 }
 
+window.addEventListener("gamepadconnected", (e) => {
+    isGamepadConnected = true;
 
+    // assign information to gamepad_values on interval
+    setInterval(() => {
+        // get gamepad
+        const gamepad = navigator.getGamepads()[0];
+
+        // get axes values
+        joystick_values = [
+            gamepad.axes[0],
+            gamepad.axes[1],
+            gamepad.axes[2],
+            gamepad.axes[3],
+        ];
+    }, 100);
+});
 
 function gameLoop() {
-    updatePlayer(player1, keys.left, keys.right, keys.up);
-    updatePlayer(player2, keys.a, keys.d, keys.w);
-    
+    if (isGamepadConnected) {
+        updatePlayer(player1, joystick_values[0], 0, joystick_values[1] < -.5);
+        updatePlayer(player2, joystick_values[2], 0, joystick_values[3] < -.5);
+    } else {
+        updatePlayer(player1, keys.left, keys.right, keys.up);
+        updatePlayer(player2, keys.a, keys.d, keys.w);
+    }
     renderCanvas();
     renderPlayer(player1);
     renderPlayer(player2);
     renderPlatforms();
+
+    if (player1.y - player1.height > 500) {
+        if (player1.x < 1000) {
+            player1.x = player1_start_x;
+            player1.y = 0;
+        } else {
+            player1.done = true;
+        }
+    }
+    if (player2.y - player2.height > 500) {
+        if (player2.x < 1000) {
+            player2.x = player2_start_x;
+            player2.y = 0;
+        } else {
+            player2.done = true;
+        }
+    }
 }
 
 function updatePlayer(player, leftKey, rightKey, upKey) {
     if (player.jump === false) {
         player.x_v *= friction;
-    } else {
-        player.y_v += gravity;
-
-        
     }
-
-    // Allow jumping only if the player is on the ground
+    player.y_v += gravity;
+    if (player.y_v > 10) {
+        player.y_v = 10;
+    }
+    // Allow jumping only if player is on the ground
     if (upKey && !player.jump) {
         player.y_v = -jumpStrength;
         player.jump = true;
@@ -191,12 +375,6 @@ function updatePlayer(player, leftKey, rightKey, upKey) {
     }
     player.x += player.x_v;
 
-    //if player would fall below canvas, respawn
-    if(player.y > canvas.height){
-        player.x = 100;
-        player.y = 375;
-    }
-
     // Collision with platforms
     platforms.forEach(platform => {
         if (
@@ -213,11 +391,8 @@ function updatePlayer(player, leftKey, rightKey, upKey) {
     });
 }
 
-
 var canvas = document.getElementById("canvas");
 var ctx = canvas.getContext("2d");
-canvas.height = 500;
-canvas.width = 1200;
 canvas.height = 500;
 canvas.width = 1200;
 createPlatforms();
