@@ -34,10 +34,12 @@ function createPlayer(x, y, color) {
         jump: false,
         height: 20,
         width: 20,
+        done: false,
         color: color,
     };
 }
 
+let level = 0;
 const levels = [
     [
         {
@@ -77,11 +79,86 @@ const levels = [
             "height": 15
         },
     ],
+    [
+        {
+            x: 10,
+            y: 450,
+            width: 200,
+            height: 15,
+        },
+        {
+            x: 240,
+            y: 370,
+            width: 100,
+            height: 30,
+        },
+        {
+            x: 400,
+            y: 430,
+            width: 100,
+            height: 30,
+        },
+        {
+            x: 550,
+            y: 400,
+            width: 75,
+            height: 15,
+        },
+        {
+            x: 700,
+            y: 450,
+            width: 150,
+            height: 15,
+        },
+        {
+            x: 850,
+            y: 425,
+            width: 150,
+            height: 15,
+        },
+        {
+            x: 1100,
+            y: 400,
+            width: 50,
+            height: 15,
+        },
+        {
+            x: 1000,
+            y: 350,
+            width: 50,
+            height: 15,
+        },
+        {
+            x: 860,
+            y: 300,
+            width: 50,
+            height: 15,
+        },
+        {
+            x: 700,
+            y: 300,
+            width: 100,
+            height: 15,
+        },
+        {
+            x: 600,
+            y: 270,
+            width: 100,
+            height: 15,
+        },
+        {
+            x: 600,
+            y: 270,
+            width: 100,
+            height: 15,
+        },
+    ]
 ];
 
 
 function createPlatforms() {
-    levels[0].forEach(platform => {
+    platforms = [];
+    levels[level].forEach(platform => {
         platforms.push(platform);
     })
 }
@@ -98,6 +175,20 @@ function renderPlayer(player) {
 }
 
 function renderPlatforms() {
+    if (player1.done && player2.done) {
+        level++;
+        if (level >= levels.length) {
+            level = 0;
+        }
+        createPlatforms();
+        player1.x = player1_start_x;
+        player1.y = 0;
+        player2.x = player2_start_x;
+        player2.y = 0;
+        player1.done = false;
+        player2.done = false;
+    }
+    
     platforms.forEach(platform => {
         ctx.fillStyle = platform.color || "#45597E";
         ctx.fillRect(platform.x, platform.y, platform.width, platform.height);
@@ -155,13 +246,21 @@ function gameLoop() {
     renderPlayer(player2);
     renderPlatforms();
 
-    if (player1.y > 500) {
-        player1.x = player1_start_x;
-        player1.y = 0;
+    if (player1.y - player1.height > 500) {
+        if (player1.x < 1000) {
+            player1.x = player1_start_x;
+            player1.y = 0;
+        } else {
+            player1.done = true;
+        }
     }
-    if (player2.y > 500) {
-        player2.x = player2_start_x;
-        player2.y = 0;
+    if (player2.y - player2.height > 500) {
+        if (player2.x < 1000) {
+            player2.x = player2_start_x;
+            player2.y = 0;
+        } else {
+            player2.done = true;
+        }
     }
 }
 
